@@ -3,8 +3,8 @@ X Show list of actions
 X AI After seeing zombie
 X AI At specific health/infection levels
 X hover to see status
-- Sight implementation
-- AI Should only become active after seeing a zombie (Patrol otherwise?)
+X Sight implementation
+X AI Should only become active after seeing a zombie (Patrol otherwise?)
 - AI Should not pick attack if nothing will be in range
 - actions that have special self affect
 - More kinds of actions/attacks
@@ -12,7 +12,7 @@ X hover to see status
 - hook up animations
 - fx on attacks/damage/death
 - hover tooltips for attacks
-- Enemies out of player sight should move instantly/faster
+X Enemies out of player sight should move instantly/faster
 
 Low Priority:
 - score
@@ -24,10 +24,10 @@ Low Priority:
 - Auto Trigger Attacks
 - Movement undo
 
-
 Maybe:
 - level generation?
 - level selection?
 - leveling?
 - buffs system?
 - mini-map?
+
