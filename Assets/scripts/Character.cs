@@ -6,22 +6,27 @@ public class Character : GamePiece {
 
 	private void OnMouseEnter()
 	{
-		
-		GameManager.Instance.HealthTooltip.SetActive(true);
-		GameManager.Instance.HealthTooltipText.text = "HP: " + Controller.CurrentHP + "/" + Controller.MaxHP + "\n" + "Infection: " + Controller.CurrentInfection + "/" + Controller.MaxInfection;
+		if (!GameManager.Instance.ActionMenu.SelectingActions)
+		{
+			GameManager.Instance.ToolTip.SetActive(true);
+			GameManager.Instance.TooltipText.text = "HP: " + Controller.CurrentHP + "/" + Controller.MaxHP + "\n" + "Infection: " + Controller.CurrentInfection + "/" + Controller.MaxInfection;
+		}
 	}
 
 	private void OnMouseExit()
 	{
-		GameManager.Instance.HealthTooltip.SetActive(false);
-		GameManager.Instance.HealthTooltipText.text = "";
+		GameManager.Instance.ToolTip.SetActive(false);
+		GameManager.Instance.TooltipText.text = "";
 	}
 
 	private void OnMouseOver()
 	{
-		if (!GameManager.Instance.HealthTooltip.activeInHierarchy)
-			OnMouseEnter();
+		if (!GameManager.Instance.ActionMenu.SelectingActions)
+		{
+			if (!GameManager.Instance.ToolTip.activeInHierarchy)
+				OnMouseEnter();
+		}
 
-		//GameManager.Instance.HealthTooltip.transform.position = Input.mousePosition;
+		//GameManager.Instance.ToolTip.transform.position = Input.mousePosition;
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GameCharacterController : MonoBehaviour 
 {
@@ -22,6 +23,8 @@ public class GameCharacterController : MonoBehaviour
 	public List<GamePiece> AvailableMovePositions;
 	public List<GamePiece> AvailableAttackTargetFloorSquares;
 	public List<GamePiece> AvailableAttackTargetCharacters;
+	public List<GamePiece> VisibleCharacters;
+	public List<GamePiece> VisibleFloors;
 
 	public delegate void CharacterEventHandler(GameCharacterController character);
 	public event CharacterEventHandler CharacterMovementComplete;
@@ -61,6 +64,8 @@ public class GameCharacterController : MonoBehaviour
 		AvailableMovePositions = new List<GamePiece>();
 		AvailableAttackTargetFloorSquares = new List<GamePiece>();
 		AvailableAttackTargetCharacters = new List<GamePiece>();
+		VisibleCharacters = new List<GamePiece>();
+		VisibleFloors = new List<GamePiece>();
 		activeMovement = new List<GamePiece>();
 		AILink = gameObject.GetComponent<AIController>();
 
@@ -139,7 +144,7 @@ public class GameCharacterController : MonoBehaviour
 			var dummyFloorPieces = new List<GamePiece>();
 			var hitTargets = new List<GamePiece>();
 
-			GameManager.Instance.Board.GetAvailableTargets(targetFloorSquare, SelectedAction.AoeAtTarget, false, true, out hitTargets, out dummyFloorPieces);
+			GameManager.Instance.Board.GetAvailableTargets(targetFloorSquare, SelectedAction.AoeAtTarget, false /* throughWalls */, true /* throughPeople */, out hitTargets, out dummyFloorPieces);
 			foreach (var hitTarget in hitTargets)
 			{
 				var characterController = hitTarget.GetComponent<GameCharacterController>();
@@ -188,7 +193,7 @@ public class GameCharacterController : MonoBehaviour
 	public void BeginTargetSelectPhase()
 	{
 		// find available targets
-		GameManager.Instance.Board.GetAvailableTargets(CharacterLink, SelectedAction.Range, SelectedAction.RequiresLineOfSight, SelectedAction.Pierces, out AvailableAttackTargetCharacters, out AvailableAttackTargetFloorSquares);
+		GameManager.Instance.Board.GetAvailableTargets(CharacterLink, SelectedAction.Range, SelectedAction.ThroughWalls, SelectedAction.Pierces, out AvailableAttackTargetCharacters, out AvailableAttackTargetFloorSquares);
 		
 		// highlight all floor targets red
 		foreach (var floorPiece in AvailableAttackTargetFloorSquares)
@@ -213,6 +218,7 @@ public class GameCharacterController : MonoBehaviour
 	//---------------------------------------------------------------------------
 	public void BeginTurn()
 	{
+		UpdateVisiblePieces();
 		if (AILink)
 			AILink.OnTurnBegins();
 		BeginMovePhase();
@@ -260,18 +266,31 @@ public class GameCharacterController : MonoBehaviour
 	}
 
 	//---------------------------------------------------------------------------
+	public void UpdateVisiblePieces()
+	{
+		GameManager.Instance.Board.GetAvailableTargets(CharacterLink, SightRange, false /* through walls */, true /* through people */, out VisibleCharacters, out VisibleFloors);
+		if (IsAIControlled())
+		{
+			AILink.OnSeeCharacters(VisibleCharacters);
+		}
+		else
+		{
+			GameManager.Instance.UpdateAllPlayerVisibleGamePieces();
+		}		
+	}
+
+	//---------------------------------------------------------------------------
 	// What can this guy see?
 	public List<GamePiece> GetPiecesVisible()
 	{
-		// STUB - return all piece
-		return GameManager.Instance.Board.AllPiecesList;
+		return VisibleFloors;
 	}
 
 	//---------------------------------------------------------------------------
 	public bool CanSeePosition(int hPos, int vPos)
 	{
-		// STUB - pretend you can always see everything
-		return true;
+		var floorAtTarget = GameManager.Instance.Board.FloorPieces[hPos, vPos];
+		return VisibleFloors.Contains(floorAtTarget);
 	}
 
 	public float SecondsToMoveOneSquare = .3f;
@@ -293,6 +312,7 @@ public class GameCharacterController : MonoBehaviour
 				{
 					movementTime = 0f;
 					GameManager.Instance.Board.MovePiecetoNewLocation(activeMovement[0].BoardHPos, activeMovement[0].BoardVPos, CharacterLink);
+					UpdateVisiblePieces();
 					activeMovement.RemoveAt(0);
 				}
 			}

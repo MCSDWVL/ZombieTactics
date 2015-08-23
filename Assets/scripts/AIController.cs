@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class AIController : MonoBehaviour 
 {
@@ -117,21 +118,12 @@ public class AIController : MonoBehaviour
 
 	public void OnTurnBegins()
 	{
-		UpdateKnownEnemies();
 	}
 
-	// TODO: this is the worst function ever, fix it.  Needs to be based on awareness of enemies not just grabbing every enemy.
-	private void UpdateKnownEnemies()
+	public void OnSeeCharacters(List<GamePiece> seenobjects)
 	{
-		KnownEnemies.Clear();
-		foreach (var piece in GameManager.Instance.Board.AllPiecesList)
-		{
-			var character = piece as Character;
-			if (character)
-			{
-				if (IsCharacterMyEnemy(character.Controller))
-					KnownEnemies.Add(character.Controller);
-			}
-		}
+		var characters = from character in seenobjects where (character as Character != null) select (Character)character;
+		var enemies = from character in characters where IsCharacterMyEnemy(character.Controller) select character.Controller;
+		KnownEnemies = KnownEnemies.Union(enemies).ToList();
 	}
 }

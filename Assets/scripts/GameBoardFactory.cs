@@ -28,7 +28,7 @@ public class GameBoardFactory : MonoBehaviour
 		V = 4, // Civilian
 	}
 
-	// A test map with some walls, floors, and two each of the character pieces
+	// A test map with some walls, floors, and two each of the piece pieces
 	private GP[,] testMap = 
 	{
 		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.C,},
@@ -41,6 +41,28 @@ public class GameBoardFactory : MonoBehaviour
 		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,},
 		{GP.F,GP.F,GP.F,GP.F,GP.Z,GP.F,GP.F,GP.F,GP.F,GP.F,},
 		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.V,},
+	};
+
+	private GP[,] visibilitytestMap = 
+	{
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.F,GP.Z,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.Z,GP.F,},
 	};
 
 	public GamePiece PrefabFromGP(GP gp)
@@ -93,5 +115,6 @@ public class GameBoardFactory : MonoBehaviour
 	public void Start()
 	{
 		CreateGameBoard(testMap);
+		GameManager.Instance.Board.FinalizeBoardCreation();
 	}
 }

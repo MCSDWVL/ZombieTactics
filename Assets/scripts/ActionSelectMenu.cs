@@ -9,14 +9,16 @@ public class ActionSelectMenu : MonoBehaviour {
 	public delegate void ActionSelectedHandler(int idx);
 	public event ActionSelectedHandler ActionSelected;
 	public void OnActionSelected(int idx) { if (ActionSelected != null) ActionSelected(idx); }
+	public bool SelectingActions { get; private set; }
 	
 	public void UpdateWithActiveCharacterActions(GameCharacterController characterController)
 	{
+		SelectingActions = true;
 		var actions = characterController.PostMoveActions;
 		for (var i = 0; i < actions.Length; ++i)
 		{
 			SetButtonVisible(actionButtons[i], true);
-			actionButtons[i].GetComponentInChildren<Text>().text = actions[i].Name;
+			actionButtons[i].GetComponentInChildren<Text>().text = actions[i].NameStatsDescription;
 
 			actionButtons[i].onClick.RemoveAllListeners();
 			
@@ -28,6 +30,7 @@ public class ActionSelectMenu : MonoBehaviour {
 
 	public void HideActionButtons()
 	{
+		SelectingActions = false;
 		foreach (var button in actionButtons)
 			SetButtonVisible(button, false);
 	}

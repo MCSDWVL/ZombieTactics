@@ -2,6 +2,7 @@
 using System.Collections;
 
 using System.Collections.Generic;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -21,8 +22,8 @@ public class GameManager : MonoBehaviour
 
 	public ActionSelectMenu ActionMenu;
 
-	public GameObject HealthTooltip;
-	public UnityEngine.UI.Text HealthTooltipText;
+	public GameObject ToolTip;
+	public UnityEngine.UI.Text TooltipText;
 
 	//---------------------------------------------------------------------------
 	private void StartNextCharactersTurn()
@@ -33,7 +34,7 @@ public class GameManager : MonoBehaviour
 			activeCharacter.CharacterTurnEnded -= OnCharacterTurnEnded;
 		}
 
-		// Get a new character started.
+		// Get a new piece started.
 		activeCharacter = ActQueue.GetNextActiveCharacter();
 		activeCharacter.CharacterTurnEnded += OnCharacterTurnEnded;
 		activeCharacter.BeginTurn();
@@ -51,12 +52,12 @@ public class GameManager : MonoBehaviour
 	//---------------------------------------------------------------------------
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Space))
+		/*if (Input.GetKeyDown(KeyCode.Space))
 		{
 			if(activeCharacter)
 				activeCharacter.EndTurn();
 			StartNextCharactersTurn();
-		}
+		}*/
 	}
 
 	//---------------------------------------------------------------------------
@@ -78,10 +79,42 @@ public class GameManager : MonoBehaviour
 
 	//---------------------------------------------------------------------------
 	// Every FLOOR PIECE that is visible to the player.
-	public List<GamePiece> GetAllPlayerVisibleGamePieces()
+	public List<GamePiece> AllVisibleFloorPieces = new List<GamePiece>();
+	public List<GamePiece> UpdateAllPlayerVisibleGamePieces()
 	{
+		var oldVisiblePieces = new List<GamePiece>();
+		oldVisiblePieces.AddRange(AllVisibleFloorPieces);
+
+		AllVisibleFloorPieces.Clear();
+		foreach (var character in Board.AllPlayerOwnedPieces)
+			AllVisibleFloorPieces = AllVisibleFloorPieces.Union(character.Controller.VisibleFloors).ToList();
+
+		var noLongerVisible = oldVisiblePieces.Except(AllVisibleFloorPieces);
+		var newlyVisible = AllVisibleFloorPieces.Except(oldVisiblePieces);
+		foreach (var piece in noLongerVisible)
+		{
+			if (piece == null)
+				continue;
+
+			// if this is a wall space, keep the walls visible
+			Debug.Log(string.Format("No longer visible {0},{1}", piece.BoardHPos, piece.BoardVPos));
+			var pieceHere = GameManager.Instance.Board.NonFloorPieces[piece.BoardHPos, piece.BoardVPos];
+			if (pieceHere != null && pieceHere.gameObject.layer == LayerMask.NameToLayer("Wall"))
+				continue;
+
+			// make invisible
+			GameManager.Instance.Board.VisionHidePieces[piece.BoardHPos, piece.BoardVPos].enabled = true;
+		}
+		foreach (var piece in newlyVisible)
+		{
+			if (piece == null)
+				continue;
+			Debug.Log(string.Format("Now visible {0},{1}", piece.BoardHPos, piece.BoardVPos));
+			GameManager.Instance.Board.VisionHidePieces[piece.BoardHPos, piece.BoardVPos].enabled = false;
+		}
+
 		// Stub - just return all pieces.
-		return Board.AllPiecesList;
+		return AllVisibleFloorPieces;
 	}
 
 	//---------------------------------------------------------------------------

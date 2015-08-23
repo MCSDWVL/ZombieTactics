@@ -4,10 +4,15 @@ using System.Collections.Generic;
 
 public class GameBoard : MonoBehaviour 
 {
-	GamePiece[,] NonFloorPieces { get; set; }
+	public GamePiece[,] NonFloorPieces { get; set; }
 	public GamePiece[,] FloorPieces { get; set; }
+	public SpriteRenderer[,] VisionHidePieces { get; set; }
 	public List<GamePiece> AllPiecesList;
+	public List<Character> AllPlayerOwnedPieces;
+	public List<Character> AllAIOwnedPieces;
 	public float PieceSpace = .3f;
+
+	public SpriteRenderer VisionHidePrefab;
 	
 	// Game Board Events
 	public delegate void PieceEventHandler(GameBoard board, GamePiece piece);
@@ -17,12 +22,34 @@ public class GameBoard : MonoBehaviour
 	public event PieceEventHandler PieceRemoved;
 	public void OnPieceRemoved(GameBoard board, GamePiece piece) { if (PieceRemoved != null) PieceRemoved(board, piece); }
 
+	public bool BoardDoneBeingCreated { get; set; }
+
 	//---------------------------------------------------------------------------
 	public void CreateBoard(int width, int height)
 	{
+		BoardDoneBeingCreated = false;
 		NonFloorPieces = new GamePiece[width, height];
 		FloorPieces = new GamePiece[width, height];
 		AllPiecesList = new List<GamePiece>(width * height);
+		AllPlayerOwnedPieces = new List<Character>();
+		AllAIOwnedPieces = new List<Character>();
+		VisionHidePieces = new SpriteRenderer[width, height];
+		for (var h = 0; h < width; ++h)
+			for (var v = 0; v < height; ++v)
+			{
+				VisionHidePieces[h, v] = GameObject.Instantiate(VisionHidePrefab);
+				VisionHidePieces[h, v].transform.position = GetWorldPositionForBoardPosition(h, v);
+			}
+	}
+
+	//---------------------------------------------------------------------------
+	public void FinalizeBoardCreation()
+	{
+		BoardDoneBeingCreated = true;
+		foreach (var character in AllPlayerOwnedPieces)
+			character.Controller.UpdateVisiblePieces();
+		foreach (var character in AllAIOwnedPieces)
+			character.Controller.UpdateVisiblePieces();
 	}
 
 	//---------------------------------------------------------------------------
@@ -52,6 +79,19 @@ public class GameBoard : MonoBehaviour
 		AllPiecesList.Add(piece);
 		piece.BoardHPos = hPos;
 		piece.BoardVPos = vPos;
+
+		var character = piece as Character;
+		if (character)
+		{
+			if (character.Controller.IsAIControlled())
+				AllAIOwnedPieces.Add(character);
+			else
+				AllPlayerOwnedPieces.Add(character);
+
+			if(BoardDoneBeingCreated)
+				character.Controller.UpdateVisiblePieces();
+		}
+
 		OnPieceAdded(this, piece);
 	}
 
@@ -95,11 +135,38 @@ public class GameBoard : MonoBehaviour
 	//---------------------------------------------------------------------------
 	public static int ManhattenDistance(GamePiece A, GamePiece B)
 	{
-		return Mathf.Abs(A.BoardHPos - B.BoardHPos) + Mathf.Abs(A.BoardVPos - B.BoardVPos);
+		return ManhattenDistance(A.BoardHPos, A.BoardVPos, B.BoardHPos, B.BoardVPos);
 	}
 
 	//---------------------------------------------------------------------------
-	public void GetAvailableTargets(GamePiece startingPiece, int attackRange, bool straightLine, bool pierce, out List<GamePiece> allCharactersInRange, out List<GamePiece> allFloorPiecesInRange)
+	public static int ManhattenDistance(GamePiece A, int hPosB, int vPosB)
+	{
+		return ManhattenDistance(A.BoardHPos, A.BoardVPos, hPosB, vPosB);
+	}
+
+	//---------------------------------------------------------------------------
+	public static int ManhattenDistance(int hPosA, int vPosA, int hPosB, int vPosB)
+	{
+		return Mathf.Abs(hPosA - hPosB) + Mathf.Abs(vPosA - vPosB);
+	}
+
+	//---------------------------------------------------------------------------
+	public void GetAvailableTargets(GamePiece startingPiece, int attackRange, bool throughWalls, bool pierce, out List<GamePiece> allCharactersInRange, out List<GamePiece> allFloorPiecesInRange)
+	{
+		// Default - hit everything but floor
+		var hitMask =  ~(1 << LayerMask.NameToLayer("Floor"));
+
+		// Default - characters are piercable
+		var piercableMask = 1 << LayerMask.NameToLayer("Character");
+
+		// Default - walls are impentrable
+		var impenetrableMask = 1 << LayerMask.NameToLayer("Wall");
+
+		GetAvailableTargets(startingPiece, attackRange, throughWalls, pierce, out allCharactersInRange, out allFloorPiecesInRange, hitMask, piercableMask, impenetrableMask);
+	}
+
+	//---------------------------------------------------------------------------
+	public void GetAvailableTargets(GamePiece startingPiece, int attackRange, bool throughWalls, bool pierce, out List<GamePiece> allCharactersInRange, out List<GamePiece> allFloorPiecesInRange, int hitMask, int piercableMask, int impenetrableMask)
 	{
 		allFloorPiecesInRange = new List<GamePiece>();
 		allCharactersInRange = new List<GamePiece>();
@@ -115,31 +182,36 @@ public class GameBoard : MonoBehaviour
 					var canHitThisSquare = true;
 
 					// Check for line of sight?
-					if (straightLine)
+					if (!throughWalls)
 					{
-						var layerMask = ~(1 << LayerMask.NameToLayer("Floor"));
-						var characterLayer = LayerMask.NameToLayer("Character");
-						var wallLayer = LayerMask.NameToLayer("Wall");
+						// ignore floor hits
 						var startVector = GetWorldPositionForBoardPosition(startingPiece.BoardHPos, startingPiece.BoardVPos);
 						var endVector = GetWorldPositionForBoardPosition(targetPosH, targetPosV);
-						var hits = Physics2D.RaycastAll(startVector, endVector - startVector, (endVector - startVector).magnitude, layerMask);
+						var hits = Physics2D.RaycastAll(startVector, endVector - startVector, (endVector - startVector).magnitude, hitMask);
 
 						// check if it needs to stop due to piercing problems
 						foreach (var hit in hits)
 						{
+							// ignore hitting self
 							if (Mathf.Approximately(hit.fraction, 0f))
 								continue;
 
-							if (hit.collider.gameObject.layer == wallLayer)
-							{
-								canHitThisSquare = false;
-								break;
-							}
+							var isImpenetrableLayer = ((1 << hit.collider.gameObject.layer) & impenetrableMask) != 0;
+							var isPiercableLayer = ((1 << hit.collider.gameObject.layer) & piercableMask) != 0;
 
-							//if (!pierce && hit.collider.gameObject.layer == characterLayer)
-							//{
-							//
-							//}
+							// if a piece was hit, check if it was at the target terminus (yes we can hit) or not (no we can't hit)
+							if (isImpenetrableLayer || (!pierce && isPiercableLayer))
+							{
+								var piece = hit.collider.GetComponent<GamePiece>();
+								if (piece)
+								{
+									if (piece.BoardHPos != targetPosH || piece.BoardVPos != targetPosV)
+									{
+										canHitThisSquare = false;
+										break;
+									}
+								}
+							}
 						}
 					}
 					if (canHitThisSquare)
