@@ -31,6 +31,22 @@ public class CharacterAction : MonoBehaviour
 	public bool Pierces = false;
 	public bool ThroughWalls = true;
 	public int AoeAtTarget = 0;
+	
+	public int SelfHealthDamageMin = 0;
+	public int SelfHealthDamageMax = 0;
+
+	public int SelfInfectionDamageMin = 0;
+	public int SelfInfectionDamageMax = 0;
+
+	public int GetSelfHealthDamage()
+	{
+		return UnityEngine.Random.Range(SelfHealthDamageMin, SelfHealthDamageMax);
+	}
+
+	public int GetSelfInfectionDamage()
+	{
+		return UnityEngine.Random.Range(SelfInfectionDamageMin, SelfInfectionDamageMax);
+	}
 
 	public int GetHealthDamage()
 	{

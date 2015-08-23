@@ -28,6 +28,13 @@ public class GameManager : MonoBehaviour
 	//---------------------------------------------------------------------------
 	private void StartNextCharactersTurn()
 	{
+		if (transformationTargets.Count > 0)
+		{
+			Debug.Log("Waiting for Transformation to finish...");
+			ActionMenu.UpdateWithTransformationChoices();
+			return;
+		}
+			
 		// Unsubscribe the old event
 		if (activeCharacter)
 		{
@@ -68,13 +75,34 @@ public class GameManager : MonoBehaviour
 	}
 
 	//---------------------------------------------------------------------------
+	private List<GameCharacterController> transformationTargets = new List<GameCharacterController>();
+	public void BeginSelectTransformationPhase(GameCharacterController target)
+	{
+		transformationTargets.Add(target);
+	}
+
+	//---------------------------------------------------------------------------
 	private void OnActionSelected(int idx)
 	{
 		ActionMenu.HideActionButtons();
-		activeCharacter.OnActionSelected(idx);
+		if (transformationTargets.Count > 0)
+		{
+			Debug.Log("Transforming?");
+			var target = transformationTargets[0];
+			transformationTargets.RemoveAt(0);
+			target.TransformationTarget = ActionMenu.TransformationOptions[idx];
+			target.Transform();
 
-		// TODO: stop being garbage
-		activeCharacter.BeginTargetSelectPhase();
+			// Try to end the turn??
+			StartNextCharactersTurn();
+		}
+		else
+		{
+			activeCharacter.OnActionSelected(idx);
+
+			// TODO: stop being garbage
+			activeCharacter.BeginTargetSelectPhase();
+		}
 	}
 
 	//---------------------------------------------------------------------------
