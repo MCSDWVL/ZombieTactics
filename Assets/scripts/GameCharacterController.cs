@@ -44,6 +44,8 @@ public class GameCharacterController : MonoBehaviour
 
 	public Character TransformationTarget;
 
+	public Animator AnimatorLink;
+
 	public enum Team
 	{
 		Human,
@@ -97,7 +99,8 @@ public class GameCharacterController : MonoBehaviour
 			activeMovement.RemoveAt(0);
 
 		moving = true;
-		Debug.Log("Path found with " + activeMovement.Count + " steps: " + activeMovement);
+		if(AnimatorLink)
+			AnimatorLink.SetBool("Walking", moving);
 	}
 
 	public bool VisibleToPlayer { get { return GameManager.Instance.PlayerCanSeePiece(CharacterLink); } }
@@ -329,6 +332,8 @@ public class GameCharacterController : MonoBehaviour
 			else
 			{
 				moving = false;
+				if(AnimatorLink)
+					AnimatorLink.SetBool("Walking", moving);
 				OnCharactersMovementComplete(this);
 			}
 		}
