@@ -157,6 +157,9 @@ public class GameCharacterController : MonoBehaviour
 					characterController.GetHit(SelectedAction.GetHealthDamage(), SelectedAction.GetInfectionDamage());
 			}
 
+			if(AnimatorLink)
+				AnimatorLink.SetTrigger(SelectedAction.TriggerAnimName);
+
 			// apply the self hit aspect of the action
 			GetHit(SelectedAction.GetSelfHealthDamage(), SelectedAction.GetSelfInfectionDamage(), true /* suppressReaction against self */);
 		}
@@ -174,11 +177,18 @@ public class GameCharacterController : MonoBehaviour
 			CurrentHP = MaxHP;
 
 		if (CurrentHP <= 0)
+		{
 			Die();
+		}
 		else if (CurrentInfection >= MaxInfection)
 		{
 			// Show transformation menu!
 			GameManager.Instance.BeginSelectTransformationPhase(this);
+		}
+		else
+		{
+			if (AnimatorLink)
+				AnimatorLink.SetTrigger("HitReact");
 		}
 	}
 
@@ -196,10 +206,18 @@ public class GameCharacterController : MonoBehaviour
 	}
 
 	//---------------------------------------------------------------------------
+	private static int CORPSE_SORT_LAYER = 8;
 	private void Die()
 	{
 		EndTurn();
-		GameManager.Instance.Board.SetPiece(CharacterLink.BoardHPos, CharacterLink.BoardVPos, null);
+		if (AnimatorLink)
+			AnimatorLink.SetTrigger("Die");
+
+		// Set sort order to make it go underneath people moving into this square.
+		GetComponent<SpriteRenderer>().sortingOrder = CORPSE_SORT_LAYER;
+
+		// remove the game piece but leave the corpse
+		GameManager.Instance.Board.SetPiece(CharacterLink.BoardHPos, CharacterLink.BoardVPos, null /*replacement piece, null means remove*/, true /* leave corpse */);
 	}
 
 	//---------------------------------------------------------------------------
@@ -306,6 +324,7 @@ public class GameCharacterController : MonoBehaviour
 		return VisibleFloors.Contains(floorAtTarget);
 	}
 
+	//---------------------------------------------------------------------------
 	public float SecondsToMoveOneSquare = .3f;
 	private float movementTime = 0f;
 	public void Update()

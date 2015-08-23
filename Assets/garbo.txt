@@ -6,7 +6,7 @@ X hover to see status
 X Sight implementation
 X AI Should only become active after seeing a zombie (Patrol otherwise?)
 - AI Should not pick attack if nothing will be in range
-- actions that have special self affect
+X actions that have special self affect
 - More kinds of actions/attacks
 - Camera control
 - hook up animations

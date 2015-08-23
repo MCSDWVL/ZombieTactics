@@ -38,6 +38,8 @@ public class CharacterAction : MonoBehaviour
 	public int SelfInfectionDamageMin = 0;
 	public int SelfInfectionDamageMax = 0;
 
+	public string TriggerAnimName = "Attack";
+
 	public int GetSelfHealthDamage()
 	{
 		return UnityEngine.Random.Range(SelfHealthDamageMin, SelfHealthDamageMax);

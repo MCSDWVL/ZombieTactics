@@ -53,7 +53,7 @@ public class GameBoard : MonoBehaviour
 	}
 
 	//---------------------------------------------------------------------------
-	public void SetPiece(int hPos, int vPos, GamePiece piece)
+	public void SetPiece(int hPos, int vPos, GamePiece piece, bool leaveCorpse = false)
 	{
 		// Check if something is already in that spot
 		var currentPiece = NonFloorPieces[hPos, vPos];
@@ -61,7 +61,8 @@ public class GameBoard : MonoBehaviour
 		{
 			// Remove whatever is in that spot.
 			OnPieceRemoved(this, currentPiece);
-			GameObject.Destroy(currentPiece.gameObject);
+			if(!leaveCorpse)
+				GameObject.Destroy(currentPiece.gameObject);
 			NonFloorPieces[hPos, vPos] = null;
 			AllPiecesList.Remove(currentPiece);
 		}
