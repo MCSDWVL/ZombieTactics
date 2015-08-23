@@ -185,6 +185,8 @@ public class GameCharacterController : MonoBehaviour
 		if (TransformationTarget != null)
 		{
 			var newPiece = GameObject.Instantiate(TransformationTarget);
+			// Keep health when transforming.
+			newPiece.Controller.CurrentHP = CurrentHP;
 			EndTurn();
 			GameManager.Instance.Board.SetPiece(CharacterLink.BoardHPos, CharacterLink.BoardVPos, newPiece);
 		}
