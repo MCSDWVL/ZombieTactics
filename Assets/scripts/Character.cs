@@ -3,6 +3,13 @@ using System.Collections;
 
 public class Character : GamePiece {
 	public GameCharacterController Controller;
+	public string Name;
+	public string Description;
+
+	public string GetNameAndDescription()
+	{
+		return Name + ": " + Description;
+	}
 
 	private void OnMouseEnter()
 	{

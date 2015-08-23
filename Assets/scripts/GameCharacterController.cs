@@ -153,12 +153,15 @@ public class GameCharacterController : MonoBehaviour
 				if(characterController)
 					characterController.GetHit(SelectedAction.GetHealthDamage(), SelectedAction.GetInfectionDamage());
 			}
+
+			// apply the self hit aspect of the action
+			GetHit(SelectedAction.GetSelfHealthDamage(), SelectedAction.GetSelfInfectionDamage(), true /* suppressReaction against self */);
 		}
 		EndTargetSelectPhase();
 	}
 
 	//---------------------------------------------------------------------------
-	public void GetHit(int damage, int infection)
+	public void GetHit(int damage, int infection, bool supressReaction = false)
 	{
 		Debug.Log(gameObject + " getting hit " + damage + ", " + infection);
 		CurrentHP -= damage;
@@ -170,11 +173,14 @@ public class GameCharacterController : MonoBehaviour
 		if (CurrentHP <= 0)
 			Die();
 		else if (CurrentInfection >= MaxInfection)
-			Transform();
+		{
+			// Show transformation menu!
+			GameManager.Instance.BeginSelectTransformationPhase(this);
+		}
 	}
 
 	//---------------------------------------------------------------------------
-	private void Transform()
+	public void Transform()
 	{
 		if (TransformationTarget != null)
 		{
