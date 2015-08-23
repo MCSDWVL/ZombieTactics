@@ -6,7 +6,7 @@ public class Character : GamePiece {
 
 	private void OnMouseEnter()
 	{
-		if (!GameManager.Instance.ActionMenu.SelectingActions)
+		if (Controller.VisibleToPlayer)
 		{
 			GameManager.Instance.ToolTip.SetActive(true);
 			GameManager.Instance.TooltipText.text = "HP: " + Controller.CurrentHP + "/" + Controller.MaxHP + "\n" + "Infection: " + Controller.CurrentInfection + "/" + Controller.MaxInfection;
@@ -21,7 +21,7 @@ public class Character : GamePiece {
 
 	private void OnMouseOver()
 	{
-		if (!GameManager.Instance.ActionMenu.SelectingActions)
+		if (Controller.VisibleToPlayer)
 		{
 			if (!GameManager.Instance.ToolTip.activeInHierarchy)
 				OnMouseEnter();

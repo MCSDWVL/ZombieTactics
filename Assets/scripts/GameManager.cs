@@ -118,6 +118,18 @@ public class GameManager : MonoBehaviour
 	}
 
 	//---------------------------------------------------------------------------
+	public bool PlayerCanSeePiece(GamePiece piece)
+	{
+		return PlayerCanSeePosition(piece.BoardHPos, piece.BoardVPos);
+	}
+
+	//---------------------------------------------------------------------------
+	public bool PlayerCanSeePosition(int hPos, int vPos)
+	{
+		return AllVisibleFloorPieces.Contains(Board.FloorPieces[hPos, vPos]);
+	}
+
+	//---------------------------------------------------------------------------
 	private void OnCharacterDoneMoving(GameCharacterController character)
 	{
 		character.CharacterMovementComplete -= OnCharacterDoneMoving;

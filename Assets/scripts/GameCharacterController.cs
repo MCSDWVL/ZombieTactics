@@ -100,6 +100,8 @@ public class GameCharacterController : MonoBehaviour
 		Debug.Log("Path found with " + activeMovement.Count + " steps: " + activeMovement);
 	}
 
+	public bool VisibleToPlayer { get { return GameManager.Instance.PlayerCanSeePiece(CharacterLink); } }
+
 	//---------------------------------------------------------------------------
 	public void BeginMovePhase()
 	{
@@ -110,7 +112,7 @@ public class GameCharacterController : MonoBehaviour
 		}
 
 		if (AILink != null)
-			AILink.CountdownToSelectMovement = 1f;
+			AILink.CountdownToSelectMovement = VisibleToPlayer ? 1f : 0.01f;
 	}
 
 	//---------------------------------------------------------------------------
@@ -204,7 +206,7 @@ public class GameCharacterController : MonoBehaviour
 		if (SelectedAction.IsNoOp())
 			EndTargetSelectPhase();
 		else if (AILink != null)
-			AILink.CountdownToSelectTarget = 1f;
+			AILink.CountdownToSelectTarget = VisibleToPlayer ? 1f : 0.01f;
 	}
 
 	//---------------------------------------------------------------------------
@@ -302,7 +304,7 @@ public class GameCharacterController : MonoBehaviour
 			if (activeMovement.Count > 0)
 			{
 				movementTime += Time.deltaTime;
-				var movePercent = movementTime / SecondsToMoveOneSquare;
+				var movePercent = VisibleToPlayer ? movementTime / SecondsToMoveOneSquare : 1f;
 				var startPosition = GameManager.Instance.Board.GetWorldPositionForBoardPosition(CharacterLink.BoardHPos, CharacterLink.BoardVPos);
 				var targetPosition = GameManager.Instance.Board.GetWorldPositionForBoardPosition(activeMovement[0].BoardHPos, activeMovement[0].BoardVPos);
 				var currentPosition = Vector2.Lerp(startPosition, targetPosition, movePercent);
