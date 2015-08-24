@@ -35,11 +35,22 @@ public class GameBoard : MonoBehaviour
 		AllAIOwnedPieces = new List<Character>();
 		VisionHidePieces = new SpriteRenderer[width, height];
 		for (var h = 0; h < width; ++h)
+		{
 			for (var v = 0; v < height; ++v)
 			{
 				VisionHidePieces[h, v] = GameObject.Instantiate(VisionHidePrefab);
 				VisionHidePieces[h, v].transform.position = GetWorldPositionForBoardPosition(h, v);
 			}
+		}
+
+		var cameraController = Camera.main.GetComponent<CameraController>();
+		if (cameraController)
+		{
+			var farthestPiece = GetWorldPositionForBoardPosition(width-1, height-1);
+			cameraController.MinCameraX = cameraController.MinCameraY = 0;
+			cameraController.MaxCameraX = farthestPiece.x;
+			cameraController.MaxCameraY = farthestPiece.y;
+		}
 	}
 
 	//---------------------------------------------------------------------------

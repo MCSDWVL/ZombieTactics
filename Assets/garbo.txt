@@ -9,9 +9,10 @@ X AI Should only become active after seeing a zombie (Patrol otherwise?)
 X actions that have special self affect
 - More kinds of actions/attacks
 - Camera control
-- hook up animations
+P hook up animations
+	- Partial, vv gonna do more
 - fx on attacks/damage/death
-- hover tooltips for attacks
+X hover tooltips for attacks
 X Enemies out of player sight should move instantly/faster
 
 Low Priority:
@@ -30,4 +31,5 @@ Maybe:
 - leveling?
 - buffs system?
 - mini-map?
+- Health/Infection Bars?
 
