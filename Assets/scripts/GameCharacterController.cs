@@ -108,6 +108,7 @@ public class GameCharacterController : MonoBehaviour
 	//---------------------------------------------------------------------------
 	public void BeginMovePhase()
 	{
+		Debug.Log("Begin move phase " + gameObject);
 		GetAvailableMovementPositions();
 		foreach (var floorPiece in AvailableMovePositions)
 		{
@@ -135,7 +136,6 @@ public class GameCharacterController : MonoBehaviour
 	//---------------------------------------------------------------------------
 	public void OnActionSelected(int idx)
 	{
-		Debug.Log("Action Selected " + idx);
 		SelectedAction = PostMoveActions[idx];
 		EndActionSelectPhase();
 	}
@@ -218,6 +218,10 @@ public class GameCharacterController : MonoBehaviour
 
 		// remove the game piece but leave the corpse
 		GameManager.Instance.Board.SetPiece(CharacterLink.BoardHPos, CharacterLink.BoardVPos, null /*replacement piece, null means remove*/, true /* leave corpse */);
+
+		// delete some scripts that would make this keep doing stuff
+		GameObject.Destroy(CharacterLink);
+		GameObject.Destroy(this);
 	}
 
 	//---------------------------------------------------------------------------

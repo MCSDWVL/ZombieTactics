@@ -18,14 +18,22 @@ public class GameBoardFactory : MonoBehaviour
 	// The Generic civilian piece.
 	public GamePiece CivPiecePrefab;
 
+	// El Presidente!
+	public GamePiece PresidentPiecePrefab;
+
+
+
+
 	// Kinds of pieces
 	public enum GP
 	{
+		I = -1, // Invalid
 		F = 0, // Floor
 		W = 1, // Wall
 		Z = 2, // Zombie
 		C = 3, // Cop
 		V = 4, // Civilian
+		P = 5, // President
 	}
 
 	// A test map with some walls, floors, and two each of the piece pieces
@@ -65,6 +73,80 @@ public class GameBoardFactory : MonoBehaviour
 		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.Z,GP.F,},
 	};
 
+	private GP[,] survivorSmallHouse =
+	{
+		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F},
+		{GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.F,GP.F,GP.V,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F},
+		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F},
+	};
+
+	private GP[,] emptyStreetWithDebrisOrTrees =
+	{
+		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F},
+		{GP.F,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F},
+		{GP.F,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F},
+		{GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.F},
+		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F},
+	};
+
+	private GP[,] whiteHouse = 
+	{
+		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F},
+		{GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.W,GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F,GP.W,GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.C,GP.F,GP.F,GP.F,GP.W,GP.W,GP.F,GP.W,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.C,GP.W,GP.C,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F,GP.C,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.C,GP.F,GP.F,GP.C,GP.W,GP.C,GP.F,GP.F,GP.F,GP.F,GP.F,GP.C,GP.P,GP.C,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.C,GP.W,GP.C,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F,GP.C,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.C,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.W,GP.F,GP.W,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.W,GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F,GP.W,GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F},
+		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F},
+	};
+
+	private GP[,] bigHouse =
+	{
+		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F},
+		{GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F,GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.V,GP.W,GP.W,GP.W,GP.F,GP.F,GP.W,GP.W,GP.W,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.W,GP.V,GP.F,GP.F,GP.F,GP.F,GP.V,GP.W,GP.F,GP.W,GP.F},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.V,GP.W,GP.F,GP.F,GP.V,GP.F,GP.F,GP.F,GP.W,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.W,GP.V,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.V,GP.F,GP.F,GP.F,GP.W,GP.F},
+		{GP.F,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.W,GP.F},
+		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F},
+	};
+
+	private GP[,] zombie =
+	{
+		{GP.Z},
+	};
+
+	private GP[,] testTurnAndSkip = 
+	{
+		{GP.Z,GP.V,GP.Z},
+	};
+
 	public GamePiece PrefabFromGP(GP gp)
 	{
 		switch (gp)
@@ -79,6 +161,8 @@ public class GameBoardFactory : MonoBehaviour
 				return WallPiecePrefab;
 			case GP.Z:
 				return ZombiePiecePrefab;
+			case GP.P:
+				return PresidentPiecePrefab;
 			default:
 				return null;
 		}
@@ -112,9 +196,93 @@ public class GameBoardFactory : MonoBehaviour
 		}
 	}
 
+	public GP[,] GenerateMap()
+	{
+		GP[,] generatedMap = new GP[7*20, 7*20];
+
+		// mark every area as unset
+		for(var i = 0; i < generatedMap.GetLength(0); ++i)
+			for(var j = 0; j < generatedMap.GetLength(1); ++j)
+				generatedMap[i,j] = GP.I;
+
+		// place the white house randomly (special one time only chunk)
+		var presidentPlaced = false;
+		while(!presidentPlaced)
+		{
+			presidentPlaced = TryToPlaceFeatureRandomly(whiteHouse, ref generatedMap);
+		}
+		
+		// Try to add some other features!  The map is 140x140, keep in mind feature size and the fact that some will fail
+		var features = new GP[][,] { survivorSmallHouse /* 7 */, bigHouse /* 14 */, emptyStreetWithDebrisOrTrees /* 7 */ };
+		var maxToPlace = new int[]{ 30, 20, 40 };
+		for (var i = 0; i < features.Length; ++i)
+		{
+			var addedCount = 0;
+			for (var tries = 0; tries < maxToPlace[i]; ++tries)
+			{
+				addedCount += TryToPlaceFeatureRandomly(features[i], ref generatedMap) ? 1 : 0;
+			}
+			Debug.Log(string.Format("Feature {2}: added {0}/{1}", addedCount, maxToPlace[i], i));
+		}
+
+		// Place some random starting zombies.
+		var startingZombies = 2;
+		var zombiesAdded = 0;
+		while (zombiesAdded < startingZombies)
+		{
+			zombiesAdded += TryToPlaceFeatureRandomly(zombie, ref generatedMap) ? 1 : 0;
+		}
+		
+		// Replace all remaining empty spaces with floors
+		for (var i = 0; i < generatedMap.GetLength(0); ++i)
+			for (var j = 0; j < generatedMap.GetLength(1); ++j)
+				if (generatedMap[i, j] == GP.I)
+					generatedMap[i, j] = GP.F;
+
+		return generatedMap;
+	}
+
+	public bool TryToPlaceFeatureRandomly(GP[,] feature, ref GP[,] map)
+	{
+		var randomH = UnityEngine.Random.Range(0, map.GetLength(0)-feature.GetLength(0));
+		var randomV = UnityEngine.Random.Range(0, map.GetLength(1)-feature.GetLength(1));
+		
+		if(CanPlaceFeature(feature, ref map, randomH, randomV))
+		{
+			PlaceFeature(feature, ref map, randomH, randomV);
+			return true;
+		}
+		return false;
+	}
+
+	public void PlaceFeature(GP[,] feature, ref GP[,] map, int hPos, int vPos)
+	{
+		for (var h = hPos; h < hPos + feature.GetLength(0); ++h)
+		{
+			for (var v = vPos; v < vPos + feature.GetLength(1); ++v)
+			{
+				map[h,v] = feature[h-hPos, v-vPos];
+			}
+		}
+	}
+
+	public bool CanPlaceFeature(GP[,] feature, ref GP[,] map, int hPos, int vPos)
+	{
+		for (var h = hPos; h < hPos + feature.GetLength(0); ++h)
+		{
+			for (var v = vPos; v < vPos + feature.GetLength(1); ++v)
+			{
+				if(map[h,v] != GP.I)
+					return false;
+			}
+		}
+		return true;
+	}
+
 	public void Start()
 	{
-		CreateGameBoard(testMap);
+		//CreateGameBoard(GenerateMap());
+		CreateGameBoard(testTurnAndSkip);
 		GameManager.Instance.Board.FinalizeBoardCreation();
 	}
 }

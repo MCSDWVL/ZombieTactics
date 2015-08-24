@@ -44,24 +44,19 @@ public class AIController : MonoBehaviour
 		GamePiece bestPosition = ControllerLink.CharacterLink;
 		int bestDelta = -1;
 
-		Debug.Log(gameObject + " About to consider " + availablePositions.Count + " positions to find closest to desired distance " + desiredDistance);
-
 		foreach (var position in availablePositions)
 		{
-			Debug.Log(gameObject + " Considering position " + position.BoardHPos + "," + position.BoardVPos + " desired distance: " + desiredDistance);
 			foreach (var enemy in KnownEnemies)
 			{
 				var dist = GameBoard.ManhattenDistance(enemy.CharacterLink, position);
 				var deltaFromDesired = Mathf.Abs(dist - desiredDistance);
 				if (bestDelta < 0 || deltaFromDesired < bestDelta)
 				{
-					Debug.Log("Found position with distance " + dist);
 					bestDelta = deltaFromDesired;
 					bestPosition = position;
 				}
 			}
 		}
-		Debug.Log(gameObject + "Best position " + bestPosition.BoardHPos + "," + bestPosition.BoardVPos);
 		return bestPosition;
 	}
 
@@ -112,7 +107,10 @@ public class AIController : MonoBehaviour
 		{
 			CountdownToSelectMovement -= Time.deltaTime;
 			if (CountdownToSelectMovement <= 0)
+			{
+				Debug.Log("AI Moving " + GetDesiredMovePosition());
 				GameManager.Instance.PlayerClickedSquare(GetDesiredMovePosition(), true);
+			}
 		}
 	}
 

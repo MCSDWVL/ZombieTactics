@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
 		if (activeCharacter)
 		{
 			activeCharacter.CharacterTurnEnded -= OnCharacterTurnEnded;
+			activeCharacter.CharacterMovementComplete -= OnCharacterDoneMoving;
 		}
 
 		// Get a new piece started.
@@ -48,7 +49,9 @@ public class GameManager : MonoBehaviour
 		activeCharacter.CharacterTurnEnded += OnCharacterTurnEnded;
 		activeCharacter.BeginTurn();
 		OnCharactersTurnBegins(activeCharacter);
-		MainCameraController.FlyToPiece(activeCharacter.CharacterLink);
+
+		if(PlayerCanSeePiece(activeCharacter.CharacterLink))
+			MainCameraController.FlyToPiece(activeCharacter.CharacterLink);
 	}
 
 	//---------------------------------------------------------------------------
@@ -62,12 +65,23 @@ public class GameManager : MonoBehaviour
 	//---------------------------------------------------------------------------
 	private void Update()
 	{
-		/*if (Input.GetKeyDown(KeyCode.Space))
+		if (Input.GetKeyDown(KeyCode.Space))
 		{
-			if(activeCharacter)
-				activeCharacter.EndTurn();
-			StartNextCharactersTurn();
-		}*/
+			ForceEndTurn();
+			//StartNextCharactersTurn();
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	// Hacky garbage lol
+	private void ForceEndTurn()
+	{
+		Debug.Log("Force ending turn");
+		if (activeCharacter)
+		{
+			activeCharacter.EndTurn();
+			ActionMenu.HideActionButtons();
+		}
 	}
 
 	//---------------------------------------------------------------------------
@@ -128,7 +142,6 @@ public class GameManager : MonoBehaviour
 				continue;
 
 			// if this is a wall space, keep the walls visible
-			Debug.Log(string.Format("No longer visible {0},{1}", piece.BoardHPos, piece.BoardVPos));
 			var pieceHere = GameManager.Instance.Board.NonFloorPieces[piece.BoardHPos, piece.BoardVPos];
 			if (pieceHere != null && pieceHere.gameObject.layer == LayerMask.NameToLayer("Wall"))
 				continue;
@@ -140,7 +153,6 @@ public class GameManager : MonoBehaviour
 		{
 			if (piece == null)
 				continue;
-			Debug.Log(string.Format("Now visible {0},{1}", piece.BoardHPos, piece.BoardVPos));
 			GameManager.Instance.Board.VisionHidePieces[piece.BoardHPos, piece.BoardVPos].enabled = false;
 		}
 
@@ -207,6 +219,7 @@ public class GameManager : MonoBehaviour
 			// Is it available for movement?
 			if (activeCharacter.AvailableMovePositions.Contains(floorAtClick))
 			{
+				// is this a noop movement?
 				activeCharacter.CharacterMovementComplete += OnCharacterDoneMoving;
 				activeCharacter.BeginMoveTo(floorAtClick);
 			}
