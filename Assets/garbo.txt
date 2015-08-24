@@ -1,3 +1,16 @@
+MINIMUM TO SHIP:
+V- Hook up remaining animations
+- Add Hazmat, Obama, Skinny Zombie Characters
+M- "Main Menu -> Controls -> Game" Flow
+M- President Dead or All Zombies Dead -> KillScreen ("Game Over")
+- Actually make the builds for people to download / web player
+- Submit to LD Website
+
+SECOND TIER PRIORITY:
+- Sound FX
+- Music
+- Minimap
+
 High Priority:
 X Show list of actions
 X AI After seeing zombie
@@ -14,7 +27,7 @@ P hook up animations
 - fx on attacks/damage/death
 X hover tooltips for attacks
 X Enemies out of player sight should move instantly/faster
-- level generation?
+X level generation?
 
 Low Priority:
 - score

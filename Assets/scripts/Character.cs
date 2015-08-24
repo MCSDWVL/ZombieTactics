@@ -6,9 +6,23 @@ public class Character : GamePiece {
 	public string Name;
 	public string Description;
 
+	public bool IsGameWinningPiece = false;
+
 	public string GetNameAndDescription()
 	{
 		return Name + ": " + Description;
+	}
+
+	private void Start()
+	{
+		if (IsGameWinningPiece)
+			GameManager.Instance.NumGameWinningPiecesLeft++;
+	}
+
+	private void OnDestroy()
+	{
+		if (IsGameWinningPiece)
+			GameManager.Instance.NumGameWinningPiecesLeft--;
 	}
 
 	private void OnMouseEnter()

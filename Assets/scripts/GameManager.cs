@@ -27,9 +27,12 @@ public class GameManager : MonoBehaviour
 
 	public CameraController MainCameraController;
 
+	public int NumGameWinningPiecesLeft { get; set; }
+
 	//---------------------------------------------------------------------------
 	private void StartNextCharactersTurn()
 	{
+		CheckForGameOver();
 		if (transformationTargets.Count > 0)
 		{
 			Debug.Log("Waiting for Transformation to finish...");
@@ -230,5 +233,20 @@ public class GameManager : MonoBehaviour
 		{
 			activeCharacter.PerformAction(floorAtClick);
 		}
+	}
+
+	//---------------------------------------------------------------------------
+	public string GameOverSceneName = "GameOver";
+	public string GameWonSceneName = "GameWon";
+	public void CheckForGameOver()
+	{
+		// Are there anyplayer controlled objects left?!
+		var wonGame = false;
+		var lostGame = false;
+
+		if (Board.AllPlayerOwnedPieces.Count == 0)
+			Application.LoadLevel(GameOverSceneName);
+		else if (NumGameWinningPiecesLeft <= 0)
+			Application.LoadLevel(GameWonSceneName);
 	}
 }
