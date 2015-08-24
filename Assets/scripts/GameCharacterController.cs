@@ -108,7 +108,6 @@ public class GameCharacterController : MonoBehaviour
 	//---------------------------------------------------------------------------
 	public void BeginMovePhase()
 	{
-		Debug.Log("Begin move phase " + gameObject);
 		GetAvailableMovementPositions();
 		foreach (var floorPiece in AvailableMovePositions)
 		{
@@ -169,7 +168,6 @@ public class GameCharacterController : MonoBehaviour
 	//---------------------------------------------------------------------------
 	public void GetHit(int damage, int infection, bool supressReaction = false)
 	{
-		Debug.Log(gameObject + " getting hit " + damage + ", " + infection);
 		CurrentHP -= damage;
 		CurrentInfection += infection;
 
@@ -187,7 +185,7 @@ public class GameCharacterController : MonoBehaviour
 		}
 		else
 		{
-			if (AnimatorLink)
+			if (AnimatorLink && !supressReaction)
 				AnimatorLink.SetTrigger("HitReact");
 		}
 	}

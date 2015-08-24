@@ -1,6 +1,6 @@
 MINIMUM TO SHIP:
 V- Hook up remaining animations
-- Add Hazmat, Obama, Skinny Zombie Characters
+X Add Hazmat, Obama, Skinny Zombie Characters
 X "Main Menu -> Controls -> Game" Flow
 X President Dead or All Zombies Dead -> KillScreen ("Game Over")
 - Actually make the builds for people to download / web player

@@ -108,7 +108,6 @@ public class AIController : MonoBehaviour
 			CountdownToSelectMovement -= Time.deltaTime;
 			if (CountdownToSelectMovement <= 0)
 			{
-				Debug.Log("AI Moving " + GetDesiredMovePosition());
 				GameManager.Instance.PlayerClickedSquare(GetDesiredMovePosition(), true);
 			}
 		}

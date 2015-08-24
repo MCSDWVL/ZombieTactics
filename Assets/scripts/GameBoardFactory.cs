@@ -21,8 +21,14 @@ public class GameBoardFactory : MonoBehaviour
 	// El Presidente!
 	public GamePiece PresidentPiecePrefab;
 
+	// Hazmat
+	public GamePiece HazmatPiecePrefab;
 
+	// Skinny
+	public GamePiece SkinnyZombie;
 
+	// Fat
+	public GamePiece FatZombie;
 
 	// Kinds of pieces
 	public enum GP
@@ -34,6 +40,9 @@ public class GameBoardFactory : MonoBehaviour
 		C = 3, // Cop
 		V = 4, // Civilian
 		P = 5, // President
+		H = 6, // Hazmat
+		S = 7, // Skinny
+		O = 8, // Obese
 	}
 
 	// A test map with some walls, floors, and two each of the piece pieces
@@ -41,14 +50,14 @@ public class GameBoardFactory : MonoBehaviour
 	{
 		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.C,},
 		{GP.F,GP.F,GP.V,GP.W,GP.F,GP.C,GP.F,GP.W,GP.F,GP.F,},
-		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,},
-		{GP.F,GP.F,GP.F,GP.W,GP.W,GP.F,GP.W,GP.W,GP.F,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.W,GP.H,GP.F,},
+		{GP.F,GP.F,GP.F,GP.W,GP.W,GP.F,GP.W,GP.W,GP.F,GP.P,},
 		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,},
 		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,},
-		{GP.F,GP.F,GP.Z,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,},
+		{GP.F,GP.F,GP.O,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,},
 		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,},
 		{GP.F,GP.F,GP.F,GP.F,GP.Z,GP.F,GP.F,GP.F,GP.F,GP.F,},
-		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.V,},
+		{GP.F,GP.F,GP.F,GP.S,GP.F,GP.F,GP.F,GP.F,GP.F,GP.V,},
 	};
 
 	private GP[,] visibilitytestMap = 
@@ -89,9 +98,9 @@ public class GameBoardFactory : MonoBehaviour
 		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F},
 		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F},
 		{GP.F,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F},
-		{GP.F,GP.F,GP.F,GP.F,GP.W,GP.F,GP.F},
+		{GP.F,GP.F,GP.F,GP.H,GP.W,GP.F,GP.F},
 		{GP.F,GP.W,GP.F,GP.F,GP.F,GP.F,GP.F},
-		{GP.F,GP.F,GP.W,GP.F,GP.F,GP.F,GP.F},
+		{GP.H,GP.F,GP.W,GP.F,GP.F,GP.F,GP.F},
 		{GP.F,GP.F,GP.F,GP.F,GP.F,GP.F,GP.F},
 	};
 
@@ -168,6 +177,12 @@ public class GameBoardFactory : MonoBehaviour
 				return ZombiePiecePrefab;
 			case GP.P:
 				return PresidentPiecePrefab;
+			case GP.H:
+				return HazmatPiecePrefab;
+			case GP.O:
+				return FatZombie;
+			case GP.S:
+				return SkinnyZombie;
 			default:
 				return null;
 		}
@@ -286,8 +301,9 @@ public class GameBoardFactory : MonoBehaviour
 
 	public void Start()
 	{
-		//CreateGameBoard(GenerateMap());
-		CreateGameBoard(testPresidentGameOver);
+		CreateGameBoard(GenerateMap());
+		//CreateGameBoard(testPresidentGameOver);
+		//CreateGameBoard(testMap);
 		GameManager.Instance.Board.FinalizeBoardCreation();
 	}
 }
