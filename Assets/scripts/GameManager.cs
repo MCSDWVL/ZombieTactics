@@ -32,14 +32,13 @@ public class GameManager : MonoBehaviour
 	//---------------------------------------------------------------------------
 	private void StartNextCharactersTurn()
 	{
-		CheckForGameOver();
 		if (transformationTargets.Count > 0)
 		{
 			Debug.Log("Waiting for Transformation to finish...");
 			ActionMenu.UpdateWithTransformationChoices();
 			return;
 		}
-			
+	
 		// Unsubscribe the old event
 		if (activeCharacter)
 		{
@@ -73,6 +72,9 @@ public class GameManager : MonoBehaviour
 			ForceEndTurn();
 			//StartNextCharactersTurn();
 		}
+
+		// Check for victory!?
+		CheckForGameOver();
 	}
 
 	//---------------------------------------------------------------------------
@@ -241,12 +243,13 @@ public class GameManager : MonoBehaviour
 	public void CheckForGameOver()
 	{
 		// Are there anyplayer controlled objects left?!
-		var wonGame = false;
-		var lostGame = false;
-
 		if (Board.AllPlayerOwnedPieces.Count == 0)
+		{
 			Application.LoadLevel(GameOverSceneName);
+		}
 		else if (NumGameWinningPiecesLeft <= 0)
+		{
 			Application.LoadLevel(GameWonSceneName);
+		}
 	}
 }

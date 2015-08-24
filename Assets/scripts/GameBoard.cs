@@ -77,6 +77,8 @@ public class GameBoard : MonoBehaviour
 				GameObject.Destroy(currentPiece.gameObject);
 			NonFloorPieces[hPos, vPos] = null;
 			AllPiecesList.Remove(currentPiece);
+			AllAIOwnedPieces.Remove(currentPiece as Character);
+			AllPlayerOwnedPieces.Remove(currentPiece as Character);
 		}
 
 		// Make sure we weren't just cleaning up the old piece.

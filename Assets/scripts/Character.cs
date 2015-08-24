@@ -13,7 +13,7 @@ public class Character : GamePiece {
 		return Name + ": " + Description;
 	}
 
-	private void Start()
+	private void Awake()
 	{
 		if (IsGameWinningPiece)
 			GameManager.Instance.NumGameWinningPiecesLeft++;

@@ -147,6 +147,11 @@ public class GameBoardFactory : MonoBehaviour
 		{GP.Z,GP.V,GP.Z},
 	};
 
+	private GP[,] testPresidentGameOver =
+	{
+		{GP.Z, GP.P},
+	};
+
 	public GamePiece PrefabFromGP(GP gp)
 	{
 		switch (gp)
@@ -282,7 +287,7 @@ public class GameBoardFactory : MonoBehaviour
 	public void Start()
 	{
 		//CreateGameBoard(GenerateMap());
-		CreateGameBoard(testTurnAndSkip);
+		CreateGameBoard(testPresidentGameOver);
 		GameManager.Instance.Board.FinalizeBoardCreation();
 	}
 }
