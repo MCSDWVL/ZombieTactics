@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/art/png/naked/hit/nakedhit13.png.meta
 guid: 10a437ffc94ecd340ae2d94e80fcb12d
 timeCreated: 1440391330
+=======
+guid: ffe8082c2c66f724cb20c0984bcbe817
+timeCreated: 1440391321
+>>>>>>> 4ec24cfe4138e65ac3fbea4f450cf74586525b22:Assets/art/png/naked/hit/nakedhit13.png.meta
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName: {}
@@ -30,6 +35,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     filterMode: -1
+<<<<<<< HEAD:Assets/art/png/naked/hit/nakedhit13.png.meta
     aniso: -1
     mipBias: -1
     wrapMode: -1
@@ -38,14 +44,29 @@ TextureImporter:
   rGBM: 0
   compressionQuality: 50
   spriteMode: 0
+=======
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  spriteMode: 1
+>>>>>>> 4ec24cfe4138e65ac3fbea4f450cf74586525b22:Assets/art/png/naked/hit/nakedhit13.png.meta
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
+<<<<<<< HEAD:Assets/art/png/naked/hit/nakedhit13.png.meta
   alphaIsTransparency: 0
   textureType: -1
+=======
+  alphaIsTransparency: 1
+  textureType: 8
+>>>>>>> 4ec24cfe4138e65ac3fbea4f450cf74586525b22:Assets/art/png/naked/hit/nakedhit13.png.meta
   buildTargetSettings: []
   spriteSheet:
     sprites: []
