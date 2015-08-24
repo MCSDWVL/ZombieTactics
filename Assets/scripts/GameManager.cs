@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
 	public GameObject ToolTip;
 	public UnityEngine.UI.Text TooltipText;
 
+	public CameraController MainCameraController;
+
 	//---------------------------------------------------------------------------
 	private void StartNextCharactersTurn()
 	{
@@ -46,6 +48,7 @@ public class GameManager : MonoBehaviour
 		activeCharacter.CharacterTurnEnded += OnCharacterTurnEnded;
 		activeCharacter.BeginTurn();
 		OnCharactersTurnBegins(activeCharacter);
+		MainCameraController.FlyToPiece(activeCharacter.CharacterLink);
 	}
 
 	//---------------------------------------------------------------------------

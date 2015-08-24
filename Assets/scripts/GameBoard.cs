@@ -43,6 +43,7 @@ public class GameBoard : MonoBehaviour
 			}
 		}
 
+		// setup the camera limits
 		var cameraController = Camera.main.GetComponent<CameraController>();
 		if (cameraController)
 		{
@@ -322,6 +323,12 @@ public class GameBoard : MonoBehaviour
 		
 		ret.AddRange(shortestList);
 		return ret;
+	}
+
+	//---------------------------------------------------------------------------
+	public Vector2 GetWorldPositionForBoardPiece(GamePiece piece)
+	{
+		return GetWorldPositionForBoardPosition(piece.BoardHPos, piece.BoardVPos);
 	}
 
 	//---------------------------------------------------------------------------

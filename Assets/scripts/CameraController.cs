@@ -16,6 +16,8 @@ public class CameraController : MonoBehaviour
 	public float MinCameraY { get; set; }
 	public float MaxCameraY { get; set; }
 
+	public bool CenteredOnActivePiece { get; set; }
+
 	// Update is called once per frame
 	void LateUpdate () 
 	{
@@ -26,6 +28,10 @@ public class CameraController : MonoBehaviour
 			var inputVector = Vector3.zero;
 			if (rightclicked)
 			{
+				// Cancel any fly to 
+				flyTimeRemaining = -1;
+
+				// check for movement from last update
 				if (lastRightClick)
 				{
 					// what's the delta
@@ -45,6 +51,11 @@ public class CameraController : MonoBehaviour
 			// calculate new camera transform
 			Camera.main.transform.position = CalculateCameraPosition(inputVector);
 		}
+		else if (flyTimeRemaining > 0)
+		{
+			Camera.main.transform.position = Vector3.Lerp(startPosition, targetPosition, (FlyTime - flyTimeRemaining) / FlyTime);
+			flyTimeRemaining -= Time.deltaTime;
+		}
 
 		// track if right click is being held down
 		lastRightClick = rightclicked;
@@ -59,7 +70,23 @@ public class CameraController : MonoBehaviour
 		return newPosition;
 	}
 
+	public float FlyTime = 0.3f;
+	private Vector3 startPosition;
+	private Vector3 targetPosition;
+	private float flyTimeRemaining = -1f;
 	public void FlyToPiece(GamePiece piece)
 	{
+		var rightclicked = Input.GetMouseButton(1);
+		if(rightclicked)
+			return;
+
+		// cancel any camera velocity
+		mouseVelocity = Vector3.zero;
+
+		// start flying
+		flyTimeRemaining = FlyTime;
+		startPosition = Camera.main.transform.position;
+		targetPosition = GameManager.Instance.Board.GetWorldPositionForBoardPiece(piece);
+		targetPosition.z = startPosition.z;
 	}
 }

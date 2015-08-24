@@ -30,7 +30,7 @@ public class Character : GamePiece {
 	{
 		if (Controller.VisibleToPlayer)
 		{
-			if (!GameManager.Instance.ToolTip.activeInHierarchy)
+			//if (!GameManager.Instance.ToolTip.activeInHierarchy)
 				OnMouseEnter();
 		}
 
